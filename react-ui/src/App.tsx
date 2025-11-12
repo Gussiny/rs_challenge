@@ -1,12 +1,36 @@
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import rsLogo from "./logo-with-name.png";
 import "./App.css";
+import { useState } from "react";
+import { TeamList } from "./Components/TeamList";
+import { getTeams } from "./services/teamServices"
 
 const CONTACT_EMAIL = "paul@realsynch.com";
 const README_URI =
   "https://github.com/ReWattInc/rs_challenge/blob/main/README.md";
 
+type Team = {
+  id: number;
+  full_name: string;
+  city: string;
+  abbreviation: string;
+};
+
 export const App = () => {
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const handleTeamsFetch = async () => {
+    setLoading(true);
+    try {
+      const response = await getTeams();
+      setTeams(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -33,6 +57,19 @@ export const App = () => {
         >
           Ask a Question
         </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleTeamsFetch}
+          disabled={loading}
+        >
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Fetch teams info"
+          )}
+        </Button>
+        <TeamList teams={teams} />
       </main>
     </div>
   );

@@ -1,11 +1,15 @@
 import express from "express";
 import path from "path";
 import cluster from "cluster";
+import cors from "cors";
+import teamsRouter from "./routes/teamsRoutes"
+import weatherRouter from "./routes/weatherRoutes"
 
 const numCPUs = require("os").cpus().length;
 
 const isDev = process.env.NODE_ENV !== "production";
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
+
 
 // Multi-process to utilize all CPU cores.
 if (!isDev && cluster.isMaster) {
@@ -23,6 +27,10 @@ if (!isDev && cluster.isMaster) {
   });
 } else {
   const app = express();
+
+  app.use(cors());
+  app.use('/api', teamsRouter);
+  app.use('/api', weatherRouter);
 
   // Priority serve any static files.
   app.use(express.static(path.resolve(__dirname, "../react-ui/build")));
@@ -42,8 +50,7 @@ if (!isDev && cluster.isMaster) {
 
   app.listen(PORT, () => {
     console.error(
-      `Node ${
-        isDev ? "dev server" : `cluster worker ${process.pid}`
+      `Node ${isDev ? "dev server" : `cluster worker ${process.pid}`
       }: listening on port ${PORT}`,
     );
   });
