@@ -8,7 +8,7 @@ import weatherRouter from "./routes/weatherRoutes"
 const numCPUs = require("os").cpus().length;
 
 const isDev = process.env.NODE_ENV !== "production";
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5001; /* Change it to 5001 as 5000 is already taken on Mac */
 
 
 // Multi-process to utilize all CPU cores.
@@ -28,6 +28,7 @@ if (!isDev && cluster.isMaster) {
 } else {
   const app = express();
 
+  /* Added in order to make calls through different ports on localhost ( 3000 and 5001) */
   app.use(cors());
   app.use('/api', teamsRouter);
   app.use('/api', weatherRouter);

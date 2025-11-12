@@ -2,7 +2,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config();
-
+/* Check for the API key on the .env file, if not present then app closes */
 const API_KEY = process.env.BALLDONTLIE_API_KEY;
 if( !API_KEY ) {
   console.error( 'BALLDONTLIE_API_KEY is not set.' );

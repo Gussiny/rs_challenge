@@ -3,6 +3,7 @@ import { getCurrent } from "../services/weatherService";
 
 const router = express.Router();
 
+/* Created weather route in order to only show the /api/weather URL on the frontend */
 router.get('/weather', async (req, res) => {
     const city = req.query.city as string;
 

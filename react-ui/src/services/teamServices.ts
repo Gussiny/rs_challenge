@@ -8,6 +8,6 @@ export const getTeams = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching teams:", error);
-    throw error;
+    throw error.response?.data?.error;
   }
 };

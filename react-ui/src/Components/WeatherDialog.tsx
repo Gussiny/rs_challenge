@@ -2,7 +2,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Button,
   Avatar,
@@ -10,42 +9,25 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { getWeatherByCity } from "../services/weatherServices";
+import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export interface WeatherDialogProps {
   open: boolean;
-  city: string;
   onOk: () => void;
-  weatherInfo: WeatherResponse;
-}
-
-export interface WeatherCondition {
-  text: string;
-  icon: string;
-  code: number;
-}
-
-export interface WeatherResponse {
-  last_updated_epoch: number;
-  last_updated: string;
-  temp_c: number;
-  temp_f: number;
-  is_day: number;
-  condition: WeatherCondition;
 }
 
 export const WeatherDialog: React.FC<WeatherDialogProps> = ({
   open,
-  city,
   onOk,
-  weatherInfo,
 }) => {
+  const { city, data: weatherInfo, loading} = useSelector((state: RootState) => state.weather);
   return (
     <Dialog open={open}>
       <DialogTitle>Weather in {city}</DialogTitle>
       <DialogContent>
-        {weatherInfo ? (
+        {!loading && weatherInfo ? (
           <Box display={"flex"} alignItems={"flex-start"} flexDirection={"column"}>
             <Box display={"flex"} alignItems={"center"}>
               <Avatar

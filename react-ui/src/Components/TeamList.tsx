@@ -1,49 +1,33 @@
 import React, { useState } from "react";
-import { List, ListItemButton, ListItemText } from "@mui/material";
+import { Box, Button, CircularProgress, List } from "@mui/material";
 import { WeatherDialog } from "./WeatherDialog";
-import { getWeatherByCity } from "../services/weatherServices";
 import { TeamListContent } from "./TeamListContent";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import { fetchWeather } from "../features/weather/weatherSlice";
+import { fetchTeams } from "../features/teams/teamsSlice";
+import { LoadingList } from "./LoadingList";
+import { Team } from "../types/teamTypes";
 
-export interface Team {
-  id: number;
-  full_name: string;
-  city: string;
-  abbreviation: string;
-}
+export const TeamList: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { list: teams, loading } = useSelector(
+    (state: RootState) => state.teams
+  );
 
-export interface TeamListProps {
-  teams?: Team[];
-}
-
-export interface WeatherCondition {
-  text: string;
-  icon: string;
-  code: number;
-}
-
-export interface WeatherResponse {
-  last_updated_epoch: number;
-  last_updated: string;
-  temp_c: number;
-  temp_f: number;
-  is_day: number;
-  condition: WeatherCondition;
-}
-
-export const TeamList: React.FC<TeamListProps> = ({ teams }) => {
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [weatherinfo, setWeatherinfo] = useState<WeatherResponse | null>(null);
   const [open, setOpen] = useState(false);
 
+  const handleTeamsFetch = async () => {
+    await dispatch(fetchTeams());
+  };
+
   const handleItemClick = async (city: string) => {
-    console.log("City: ", city);
-    setSelectedCity(city);
     try {
-      const cityWeather = await getWeatherByCity(city);
-      console.log(cityWeather.current);
-      setWeatherinfo(cityWeather.current);
-    } catch (error) {}
-    setOpen(true);
+      setOpen(true);
+      await dispatch(fetchWeather(city)).unwrap();
+    } catch (error) {
+      setOpen(false);
+    }
   };
 
   const handleOkButton = () => {
@@ -51,22 +35,37 @@ export const TeamList: React.FC<TeamListProps> = ({ teams }) => {
   };
 
   return (
-    <div>
+    <Box display={"flex"} flexDirection={"column"} width={"100%"}>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleTeamsFetch}
+        disabled={loading}
+      >
+        {loading ? (
+          <CircularProgress size={24} color="inherit" />
+        ) : (
+          "Fetch teams info"
+        )}
+      </Button>
       <h2>NBA Teams</h2>
-      <List component={"nav"}>
-        {teams.map((team) => {
-          return team.city && (
-            <TeamListContent key={team.id} team={team} handleItemClick={handleItemClick} />
-          );
-        })}
-      </List>
+      {loading ? (
+        <LoadingList />
+      ) : (
+        <List component={"nav"}>
+          {teams.map((team: Team) => {
+            return (
+              <TeamListContent
+                key={team.id}
+                team={team}
+                handleItemClick={handleItemClick}
+              />
+            );
+          })}
+        </List>
+      )}
 
-      <WeatherDialog
-        open={open}
-        city={selectedCity}
-        onOk={handleOkButton}
-        weatherInfo={weatherinfo}
-      />
-    </div>
+      <WeatherDialog open={open} onOk={handleOkButton} />
+    </Box>
   );
 };
