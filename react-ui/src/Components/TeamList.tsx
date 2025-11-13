@@ -24,6 +24,7 @@ export const TeamList: React.FC = () => {
   const handleItemClick = async (city: string) => {
     try {
       setOpen(true);
+      /* Unwrap used in order to handle the error on catch statement */
       await dispatch(fetchWeather(city)).unwrap();
     } catch (error) {
       setOpen(false);
@@ -48,11 +49,10 @@ export const TeamList: React.FC = () => {
           "Fetch teams info"
         )}
       </Button>
-      <h2>NBA Teams</h2>
       {loading ? (
         <LoadingList />
       ) : (
-        <List component={"nav"}>
+        <List component={"nav"} style={{marginTop: "1rem"}}>
           {teams.map((team: Team) => {
             return (
               <TeamListContent

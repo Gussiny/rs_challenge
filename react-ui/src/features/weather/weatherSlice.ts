@@ -20,7 +20,7 @@ const weatherSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchWeather.pending, (state, action) => {
+      .addCase(fetchWeather.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchWeather.fulfilled, (state, action) => {

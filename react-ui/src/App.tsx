@@ -1,9 +1,7 @@
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import rsLogo from "./logo-with-name.png";
 import "./App.css";
 import { TeamList } from "./Components/TeamList";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "./store";
 import { ErrorMessage } from "./Components/ErrorMessage";
 
 const CONTACT_EMAIL = "paul@realsynch.com";
@@ -24,6 +22,13 @@ export const App = () => {
         <img src={rsLogo} className="App-logo" alt="logo" />
       </header>
       <Box width={"70%"}>
+        <Typography
+          variant="h2"
+          color="initial"
+          style={{ marginBottom: "1rem" }}
+        >
+          NBA Teams
+        </Typography>
         <TeamList />
         <ErrorMessage />
       </Box>

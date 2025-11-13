@@ -1,6 +1,6 @@
 import { ListItemButton, ListItemText } from "@mui/material";
 import React from "react";
-import { Team } from "../types/TeamsTypes";
+import { Team } from "../types/teamTypes";
 export interface TeamListContentProps {
   team: Team;
   handleItemClick: (city: string) => void;

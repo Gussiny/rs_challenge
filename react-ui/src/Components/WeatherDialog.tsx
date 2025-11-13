@@ -52,7 +52,7 @@ export const WeatherDialog: React.FC<WeatherDialogProps> = ({
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onOk}>Ok</Button>
+        <Button disabled={loading} onClick={onOk}>Ok</Button>
       </DialogActions>
     </Dialog>
   );

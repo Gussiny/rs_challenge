@@ -17,6 +17,7 @@ const mainSlice = createSlice({
         }
     },
     extraReducers: (builder) => {
+        /* Global error state so the ErrorMessage should handle all rejects */
         builder.addMatcher(isRejected, (state, action) => {
             state.error = action.error?.message || "An unexpected error occurred while fetching data.";
         })
